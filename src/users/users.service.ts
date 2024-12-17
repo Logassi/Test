@@ -14,6 +14,8 @@ export class UsersService {
   }
 
   findAll() {
+    //fetch all from DB
+    // throw new Error('For example there is an error in DB');
     return this.users;
   }
 }

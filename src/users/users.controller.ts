@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -21,7 +23,24 @@ export class UsersController {
   }
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    try {
+      return this.usersService.findAll();
+      // return { // returning an object [json]
+      //   message: 'Here is the fetched by id ',
+      //   id: id,
+      // };
+    } catch (error) {
+      throw new HttpException(
+        'Server error bangetsz',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: error,
+
+          // cause: "yo nda tau kok tanya saaya",
+        },
+      );
+      // console.log(`Inside the catch block, this is the error ${error}`);
+    }
   }
 
   @Get(':id')
@@ -29,11 +48,15 @@ export class UsersController {
     @Param('id', ParseIntPipe)
     id: number,
   ) {
-    return `fetch this id : ${typeof id}`;
-    // return {
-    //   message: 'Here is the fetched by id ',
-    //   id: id,
-    // };
+    try {
+      return `fetch this id : ${typeof id}`;
+      // return { // returning an object [json]
+      //   message: 'Here is the fetched by id ',
+      //   id: id,
+      // };
+    } catch (error) {
+      console.log(`Inside the catch block, this is the error ${error}`);
+    }
   }
 
   @Put(':id')
