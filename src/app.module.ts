@@ -9,9 +9,17 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './common/middlewares/logger/logger.middleware';
 import { UsersController } from './users/users.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+
+// .forRoot("mongodb://[username]:[password]@localhost:[port]/[database-name]")
+//mongodb://localhost/nestjs ,,, is fine
 
 @Module({
-  imports: [UsersModule],
+  imports: [
+    UsersModule,
+    MongooseModule.forRoot('mongodb://localhost/nestjs'),
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

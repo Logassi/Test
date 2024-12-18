@@ -7,11 +7,14 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto/create-user-dto';
+import mongoose from 'mongoose';
+import { UpdateUserDTO } from './dto/update-user-dto';
 
 @Controller('users')
 export class UsersController {
@@ -19,8 +22,10 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDTO: CreateUserDTO) {
+    console.log(createUserDTO);
     return this.usersService.create(createUserDTO);
   }
+
   @Get()
   findAll() {
     try {
@@ -44,24 +49,74 @@ export class UsersController {
   }
 
   @Get(':id')
-  findById(
-    @Param('id', ParseIntPipe)
-    id: number,
-  ) {
+  async findById(@Param('id') id: string) {
     try {
-      return `fetch this id : ${typeof id}`;
-      // return { // returning an object [json]
-      //   message: 'Here is the fetched by id ',
-      //   id: id,
-      // };
+      // Validate if the ID is a valid MongoDB ObjectId
+      const isValid = mongoose.Types.ObjectId.isValid(id);
+      if (!isValid) {
+        throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+      }
+
+      // Find the user by ID
+      const findUser = await this.usersService.findById(id);
+      if (!findUser) {
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      }
+
+      return findUser;
     } catch (error) {
-      console.log(`Inside the catch block, this is the error ${error}`);
+      // If the error is already an HttpException, rethrow it
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      // Handle unexpected errors
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        { cause: error },
+      );
     }
   }
 
-  @Put(':id')
-  update() {
-    return 'updated id :';
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateUserDTO: UpdateUserDTO) {
+    try {
+      // Validate if the ID is a valid MongoDB ObjectId
+      const isValid = mongoose.Types.ObjectId.isValid(id);
+      if (!isValid) {
+        throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+      }
+
+      // Find the user by ID
+      // const findUser = await this.usersService.findById(id);
+      // if (!findUser) {
+      //   throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      // }
+
+      const updatedUser = await this.usersService.update(id, updateUserDTO);
+
+      if (!updatedUser) {
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      }
+      console.log(updateUserDTO);
+      console.log('This is the updated user : ' + updatedUser);
+
+      return updatedUser;
+      // return findUser;
+    } catch (error) {
+      // If the error is already an HttpException, rethrow it
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      // Handle unexpected errors
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        { cause: error },
+      );
+    }
   }
 
   @Delete(':id')

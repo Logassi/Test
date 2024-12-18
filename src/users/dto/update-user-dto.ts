@@ -9,28 +9,22 @@ import {
 
 // From my understanding, Schema is a guideline on how each field of the database should look like
 // While DTO is a guideline for how frontend/backend using postman, sending a request
-
-export class CreateUserDTO {
-  @IsEmail()
+export class UpdateUserDTO {
   @IsString()
-  @IsNotEmpty()
-  readonly email: string;
+  @IsOptional()
+  readonly name?: string;
 
   @IsString()
-  @IsNotEmpty()
-  readonly name: string;
-
-  @IsString()
-  @IsNotEmpty()
-  readonly birthday: string;
+  @IsOptional()
+  readonly birthday?: string;
 
   @IsNumber()
-  @IsNotEmpty()
-  readonly height: number;
+  @IsOptional()
+  readonly height?: number;
 
   @IsNumber()
-  @IsNotEmpty()
-  readonly weight: number;
+  @IsOptional()
+  readonly weight?: number;
 
   // @IsNotEmpty()
   @IsOptional()
