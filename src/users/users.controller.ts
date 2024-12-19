@@ -94,7 +94,10 @@ export class UsersController {
       //   throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
       // }
 
-      const updatedUser = await this.usersService.update(id, updateUserDTO);
+      const updatedUser = await this.usersService.updateUserById(
+        id,
+        updateUserDTO,
+      );
 
       if (!updatedUser) {
         throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
@@ -102,7 +105,8 @@ export class UsersController {
       console.log(updateUserDTO);
       console.log('This is the updated user : ' + updatedUser);
 
-      return updatedUser;
+      return new HttpException('Success', HttpStatus.OK); // return http exception to conceal the changes [user have to get the data to see]
+      // return updatedUser; // return the updated user to show the changes
       // return findUser;
     } catch (error) {
       // If the error is already an HttpException, rethrow it
@@ -120,7 +124,36 @@ export class UsersController {
   }
 
   @Delete(':id')
-  delete() {
-    return 'deleted id';
+  async delete(@Param('id') id: string) {
+    try {
+      // Validate if the ID is a valid MongoDB ObjectId
+      const isValid = mongoose.Types.ObjectId.isValid(id);
+      if (!isValid) {
+        throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+      }
+
+      const deleteUser = await this.usersService.deleteUserById(id);
+
+      if (!deleteUser) {
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      }
+      console.log(deleteUser);
+
+      return;
+      // return deleteUser;
+      // return 'deleted id';
+    } catch (error) {
+      // If the error is already an HttpException, rethrow it
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      // Handle unexpected errors
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        { cause: error },
+      );
+    }
   }
 }

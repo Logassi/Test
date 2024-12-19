@@ -38,7 +38,11 @@ export class UsersService {
   }
 
   //NOTES : when { new: true } added, the data shows/response is the new one
-  update(id: string, updateUserDTO: UpdateUserDTO) {
+  updateUserById(id: string, updateUserDTO: UpdateUserDTO) {
     return this.userModel.findByIdAndUpdate(id, updateUserDTO, { new: true });
+  }
+
+  deleteUserById(id: string) {
+    return this.userModel.findByIdAndDelete(id);
   }
 }
