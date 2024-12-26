@@ -15,15 +15,53 @@ import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto/create-user-dto';
 import mongoose from 'mongoose';
 import { UpdateUserDTO } from './dto/update-user-dto';
+import { RegisterUserDTO } from './dto/register-user-dto';
+import { LoginUserDTO } from './dto/login-user-dto';
 
-@Controller('users')
+@Controller('api')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Post()
+  @Post('createProfile')
   create(@Body() createUserDTO: CreateUserDTO) {
     console.log(createUserDTO);
     return this.usersService.create(createUserDTO);
+  }
+
+  @Post('register')
+  register(@Body() registerUserDTO: RegisterUserDTO) {
+    try {
+      console.log(registerUserDTO);
+      return this.usersService.register(registerUserDTO);
+    } catch (error) {
+      console.log(error);
+
+      // throw new HttpException(
+      //   'Server error',
+      //   HttpStatus.INTERNAL_SERVER_ERROR,
+      //   {
+      //     cause: error,
+      //   },
+      // );
+    }
+  }
+
+  @Post('login')
+  login(@Body() loginUserDTO: LoginUserDTO) {
+    try {
+      console.log(loginUserDTO);
+      return this.usersService.login(loginUserDTO);
+    } catch (error) {
+      console.log(error);
+
+      // throw new HttpException(
+      //   'Server error',
+      //   HttpStatus.INTERNAL_SERVER_ERROR,
+      //   {
+      //     cause: error,
+      //   },
+      // );
+    }
   }
 
   @Get()
@@ -36,15 +74,12 @@ export class UsersController {
       // };
     } catch (error) {
       throw new HttpException(
-        'Server error bangetsz',
+        'Server error',
         HttpStatus.INTERNAL_SERVER_ERROR,
         {
           cause: error,
-
-          // cause: "yo nda tau kok tanya saaya",
         },
       );
-      // console.log(`Inside the catch block, this is the error ${error}`);
     }
   }
 
