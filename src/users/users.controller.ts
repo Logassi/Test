@@ -64,7 +64,7 @@ export class UsersController {
     }
   }
 
-  @Get()
+  @Get('users')
   findAll() {
     try {
       return this.usersService.findAll();
@@ -83,7 +83,7 @@ export class UsersController {
     }
   }
 
-  @Get(':id')
+  @Get('user/:id')
   async findById(@Param('id') id: string) {
     try {
       // Validate if the ID is a valid MongoDB ObjectId
@@ -114,7 +114,7 @@ export class UsersController {
     }
   }
 
-  @Patch(':id')
+  @Patch('user/:id')
   async update(@Param('id') id: string, @Body() updateUserDTO: UpdateUserDTO) {
     try {
       // Validate if the ID is a valid MongoDB ObjectId
@@ -158,7 +158,7 @@ export class UsersController {
     }
   }
 
-  @Delete(':id')
+  @Delete('user/:id')
   async delete(@Param('id') id: string) {
     try {
       // Validate if the ID is a valid MongoDB ObjectId
@@ -174,7 +174,7 @@ export class UsersController {
       }
       console.log(deleteUser);
 
-      return;
+      return new HttpException('Success', HttpStatus.OK);
       // return deleteUser;
       // return 'deleted id';
     } catch (error) {

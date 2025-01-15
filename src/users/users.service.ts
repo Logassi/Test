@@ -19,7 +19,7 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  private readonly users = [];
+  // private readonly users = [];
 
   async register(registerUser: RegisterUserDTO) {
     const saltRound = 10;
